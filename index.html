@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BiltOrNot — Is the processing fee worth it?</title>
+  <meta name="description" content="Enter any transaction with a credit card surcharge. Find out if paying it to your Bilt card nets you more than it costs." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/@tabler/icons@3/icons-sprite.svg"></script>
+</head>
+<body>
+
+<h1 class="sr-only">BiltOrNot — Bilt fee calculator</h1>
+
+<div class="page-bg">
+<div class="site">
+
+  <nav class="nav">
+    <div class="nav-logo-group">
+      <div class="nav-logo"><span class="teal">Bilt</span>OrNot</div>
+      <div class="nav-tagline">That is the question.</div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Calculator</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="https://www.bilt.com/card?invite=K5TUKEWD" target="_blank" rel="noopener" class="nav-cta">Get the Bilt card ↗</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Bilt fee calculator</div>
+    <h2 class="hero-headline">Is the processing fee worth it?</h2>
+    <p class="hero-sub">Enter any transaction with a credit card surcharge. We'll tell you if charging it to your Bilt card nets you more than it costs.</p>
+  </div>
+
+  <div class="calc-grid">
+    <div class="input-panel">
+
+      <div class="field">
+        <label for="amount">Transaction amount</label>
+        <input type="number" id="amount" value="1481" min="0" oninput="syncFee();calc()" />
+      </div>
+
+      <div class="field">
+        <label>Processing fee</label>
+        <div class="field-row">
+          <div>
+            <input type="number" id="feePct" value="2.25" step="0.01" min="0" oninput="syncFee('pct')" />
+            <div class="field-hint">Percentage</div>
+          </div>
+          <div>
+            <input type="number" id="feeDollar" min="0" step="0.01" oninput="syncFee('dollar')" />
+            <div class="field-hint">Or flat $</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="category">Spend category</label>
+        <select id="category" onchange="calc()">
+          <option value="1">Everyday (1×)</option>
+          <option value="3">Dining (3×)</option>
+          <option value="3">Grocery (3×)</option>
+          <option value="2">Travel (2×)</option>
+        </select>
+      </div>
+
+      <div class="toggle-row on" id="toggleRow" onclick="toggleHousing()" role="switch" aria-checked="true" tabindex="0">
+        <span class="toggle-label">I earn housing points via Bilt Cash</span>
+        <div class="toggle on" id="housingToggle" aria-hidden="true"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="disclosure-trigger" onclick="toggleAdv()" role="button" aria-expanded="false" id="advTrigger">
+        <div>
+          <div class="dt-label">Customize assumptions</div>
+          <div class="dt-hint" id="advHint">using 1.80¢ default</div>
+        </div>
+        <span class="dt-chevron" id="advChevron">▾</span>
+      </div>
+
+      <div class="disclosure" id="advDisclosure" aria-hidden="true">
+        <div class="disclosure-inner">
+
+          <div class="housing-module">
+            <div class="hm-header">
+              <span class="hm-title">Housing points unlock</span>
+              <span class="hm-badge" id="hmBadge">Enter rent below</span>
+            </div>
+            <div class="hm-body">
+              <div class="hm-row">
+                <div class="field" style="margin-bottom:0;">
+                  <label for="housing">Monthly housing payment</label>
+                  <input type="number" id="housing" placeholder="6000" min="0" oninput="updateHousing()" />
+                  <div class="field-hint">Rent or mortgage</div>
+                </div>
+                <div class="threshold-card">
+                  <div class="tc-label">Unlock threshold</div>
+                  <div class="tc-val" id="tcVal">—</div>
+                  <div class="tc-sub">75% of housing</div>
+                </div>
+              </div>
+              <div class="hm-insight" id="hmInsight" style="color:var(--color-text-tertiary);font-style:italic;font-size:12px;">Enter your housing payment to see your unlock threshold.</div>
+              <div class="opt-toggle" onclick="toggleProgress()" role="checkbox" aria-checked="false" tabindex="0">
+                <div class="opt-box" id="progressBox" aria-hidden="true"></div>
+                Track this month's progress
+              </div>
+              <div id="progressSection" style="display:none;margin-top:4px;">
+                <div class="field" style="margin-bottom:6px;">
+                  <label for="soFar">Non-housing spend so far</label>
+                  <input type="number" id="soFar" placeholder="0" min="0" oninput="updateHousing()" style="font-size:14px;padding:7px 10px;" />
+                </div>
+                <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+                <div class="progress-meta"><span id="pLeft">$0 charged</span><span id="pRight">—</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider" style="margin:0.25rem 0 1rem;"></div>
+
+          <div class="partner-section">
+            <div class="ps-label">Your redemption partners</div>
+            <div class="chip-grid" id="chipGrid"></div>
+            <span class="show-more-link" id="showMoreLink" onclick="toggleExtra()">+ Show all 25 partners</span>
+          </div>
+
+          <div class="blend-bar">
+            <div>
+              <div class="blend-left-text" id="blendText">No partners selected</div>
+              <div class="blend-left-sub" id="blendSub">Default: Hyatt at 1.80¢</div>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:3px;">
+              <input class="cpp-override" type="number" id="cppOverride" value="1.80" step="0.05" min="0.01" oninput="onOverride()" aria-label="CPP override" />
+              <span class="cpp-unit">¢ / pt</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="result-panel">
+      <div class="verdict">
+        <div class="verdict-label">Verdict</div>
+        <div class="verdict-main yes" id="verdictMain">Worth it.</div>
+        <div class="verdict-sub" id="verdictSub"></div>
+      </div>
+      <div class="breakdown">
+        <div class="br-row"><span class="br-k">Direct points</span><span class="br-v" id="bDirect">—</span></div>
+        <div class="br-row"><span class="br-k">Housing pts unlocked</span><span class="br-v pos" id="bHousing">+0</span></div>
+        <div class="br-row"><span class="br-k">Total points</span><span class="br-v" id="bTotal">—</span></div>
+        <div class="br-row"><span class="br-k">Point value</span><span class="br-v pos" id="bValue">—</span></div>
+        <div class="br-row"><span class="br-k">Fee cost</span><span class="br-v neg" id="bFee">—</span></div>
+      </div>
+      <div class="result-divider"></div>
+      <div class="net-row">
+        <span class="net-k">Net gain</span>
+        <span class="net-v" id="netV" style="color:#0F6E56">—</span>
+      </div>
+      <div class="cpp-context" id="cppContext">Using 1.80¢/pt · World of Hyatt default</div>
+      <a href="https://www.bilt.com/card?invite=K5TUKEWD" target="_blank" rel="noopener" class="apply-btn">Apply for Bilt — no annual fee</a>
+      <div class="apply-sub">Referral link · You get 2,500 bonus points</div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-line">Nothing you enter is saved or transmitted. All calculations run locally in your browser.</div>
+    <div class="footer-line">We use cookie-free, privacy-friendly analytics to count visitors. No personal data is collected.</div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="https://biltrewards.com/card" target="_blank" rel="noopener">How Bilt works ↗</a>
+      <a href="https://www.bilt.com/card?invite=K5TUKEWD" target="_blank" rel="noopener">Get the Bilt card ↗</a>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+<script src="calculator.js"></script>
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+</body>
+</html>
