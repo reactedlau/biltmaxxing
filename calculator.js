@@ -81,6 +81,7 @@ function toggleAdv() {
   advOpen = !advOpen;
   document.getElementById('advDisclosure').className = 'disclosure' + (advOpen ? ' open' : '');
   document.getElementById('advChevron').className = 'dt-chevron' + (advOpen ? ' open' : '');
+  document.getElementById('advTrigger').setAttribute('aria-expanded', advOpen);
 }
 
 function toggleHousing() {

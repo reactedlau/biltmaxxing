@@ -199,11 +199,19 @@ body {
 .disclosure-trigger:hover .dt-label { color: var(--ink-1); }
 .dt-label { font-size: 14px; color: var(--ink-2); font-weight: 600; }
 .dt-hint { font-size: 13px; color: var(--ink-3); margin-top: 1px; }
-.dt-chevron { font-size: 16px; color: var(--ink-3); transition: transform 0.2s; display: inline-block; }
-.dt-chevron.open { transform: rotate(180deg); }
+.disclosure-inner { padding-top: 0.85rem; padding-bottom: 0.5rem; }
 .disclosure { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
 .disclosure.open { max-height: 1400px; }
-.disclosure-inner { padding-top: 0.85rem; padding-bottom: 0.5rem; }
+.dt-chevron {
+  color: var(--ink-3);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+.dt-chevron svg { display: block; }
+.disclosure-trigger:hover .dt-chevron { color: var(--accent); }
+.dt-chevron.open { transform: rotate(180deg); }
+
 
 .housing-module { border: 1px solid var(--border-1); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.35rem; background: var(--surface); }
 .hm-header { padding: 11px 14px; background: var(--accent-soft); border-bottom: 1px solid var(--accent-mid); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
