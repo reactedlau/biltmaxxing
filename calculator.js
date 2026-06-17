@@ -73,7 +73,7 @@ function onOverride() { overrideActive = true; selected.clear(); buildChips(); u
 
 function toggleExtra() {
   extraVisible = !extraVisible;
-  document.getElementById('showMoreLink').textContent = extraVisible ? '− Show fewer' : '+ Show all 25 partners';
+  document.getElementById('showMoreLink').textContent = extraVisible ? '− Show fewer' : '+ Show all partners';
   buildChips();
 }
 
