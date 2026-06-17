@@ -29,6 +29,62 @@ const PARTNERS = [
 let selected = new Set(), extraVisible = false, housingOn = true;
 let progressOn = false, advOpen = false, overrideActive = false;
 
+// ── Numeric input helpers ──
+
+function reformat(el) {
+  const start = el.selectionStart;
+  const old = el.value;
+  const digitsBeforeCursor = old.slice(0, start).replace(/[^0-9.]/g, '').length;
+
+  // Strip non-numeric, keep only the first decimal point
+  let raw = old.replace(/[^0-9.]/g, '');
+  const firstDot = raw.indexOf('.');
+  if (firstDot !== -1) raw = raw.slice(0, firstDot + 1) + raw.slice(firstDot + 1).replace(/\./g, '');
+
+  const [intPart, decPart] = raw.split('.');
+  const formatted = (intPart || '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    + (decPart !== undefined ? '.' + decPart : '');
+
+  el.value = formatted;
+
+  // Restore cursor position relative to digit count, not character index
+  let count = 0, newPos = formatted.length;
+  if (digitsBeforeCursor === 0) {
+    newPos = 0;
+  } else {
+    for (let i = 0; i < formatted.length; i++) {
+      if (/[0-9.]/.test(formatted[i])) count++;
+      if (count === digitsBeforeCursor) { newPos = i + 1; break; }
+    }
+  }
+  el.setSelectionRange(newPos, newPos);
+}
+
+function attachNumericInput(el) {
+  el.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey) return;
+    if (e.key.length > 1) return; // arrows, backspace, delete, tab, etc.
+    if (/[0-9]/.test(e.key)) return;
+    if (e.key === '.' && !el.value.includes('.')) return;
+    e.preventDefault();
+  });
+  el.addEventListener('input', function () { reformat(el); });
+}
+
+function numVal(id) {
+  return parseFloat(document.getElementById(id).value.replace(/,/g, '')) || 0;
+}
+
+function setNumVal(id, str) {
+  const el = document.getElementById(id);
+  if (str === '') { el.value = ''; return; }
+  const [intPart, decPart] = String(str).split('.');
+  el.value = (intPart || '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    + (decPart !== undefined ? '.' + decPart : '');
+}
+
+// ── Calculator ──
+
 function fmt(n) { return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function fmtPts(n) { return Math.round(n).toLocaleString('en-US'); }
 
@@ -52,14 +108,14 @@ function togglePartner(id) {
 }
 
 function getBlendedCpp() {
-  if (overrideActive) return parseFloat(document.getElementById('cppOverride').value) || 1.80;
+  if (overrideActive) return numVal('cppOverride') || 1.80;
   const sel = PARTNERS.filter(p => selected.has(p.id));
   return sel.length === 0 ? 1.80 : sel.reduce((s, p) => s + p.cpp, 0) / sel.length;
 }
 
 function updateBlend() {
   const cpp = getBlendedCpp();
-  if (!overrideActive) document.getElementById('cppOverride').value = cpp.toFixed(2);
+  if (!overrideActive) setNumVal('cppOverride', cpp.toFixed(2));
   const sel = PARTNERS.filter(p => selected.has(p.id));
   const bt = document.getElementById('blendText'), bs = document.getElementById('blendSub');
   if (overrideActive) { bt.textContent = 'Custom value'; bs.textContent = 'Partner selection overridden'; }
@@ -100,7 +156,7 @@ function toggleProgress() {
 }
 
 function updateHousing() {
-  const h = parseFloat(document.getElementById('housing').value) || 0;
+  const h = numVal('housing');
   const threshold = h * 0.75;
   document.getElementById('tcVal').textContent = h > 0 ? '$' + Math.round(threshold).toLocaleString('en-US') : '—';
   if (h === 0) {
@@ -110,7 +166,7 @@ function updateHousing() {
     i.textContent = 'Enter your housing payment to see your unlock threshold.';
     return;
   }
-  const sf = progressOn ? (parseFloat(document.getElementById('soFar').value) || 0) : 0;
+  const sf = progressOn ? numVal('soFar') : 0;
   const needed = Math.max(0, threshold - sf);
   document.getElementById('hmBadge').textContent = needed === 0 ? '✓ Fully unlocked' : '$' + Math.round(needed).toLocaleString('en-US') + ' to go';
   const insight = document.getElementById('hmInsight');
@@ -131,22 +187,21 @@ function updateHousing() {
 }
 
 function syncFee(from) {
-  const amt = parseFloat(document.getElementById('amount').value) || 0;
+  const amt = numVal('amount');
   if (from === 'pct') {
-    document.getElementById('feeDollar').value = amt > 0 ? (amt * (parseFloat(document.getElementById('feePct').value) || 0) / 100).toFixed(2) : '';
+    setNumVal('feeDollar', amt > 0 ? (amt * numVal('feePct') / 100).toFixed(2) : '');
   } else if (from === 'dollar') {
-    const d = parseFloat(document.getElementById('feeDollar').value) || 0;
-    document.getElementById('feePct').value = amt > 0 ? (d / amt * 100).toFixed(2) : '';
+    setNumVal('feePct', amt > 0 ? (numVal('feeDollar') / amt * 100).toFixed(2) : '');
   } else {
-    document.getElementById('feeDollar').value = amt > 0 ? (amt * (parseFloat(document.getElementById('feePct').value) || 0) / 100).toFixed(2) : '';
+    setNumVal('feeDollar', amt > 0 ? (amt * numVal('feePct') / 100).toFixed(2) : '');
   }
   calc();
 }
 
 function calc() {
-  const amt = parseFloat(document.getElementById('amount').value) || 0;
-  const feePct = parseFloat(document.getElementById('feePct').value) || 0;
-  const feeDollar = parseFloat(document.getElementById('feeDollar').value) || (amt * feePct / 100);
+  const amt = numVal('amount');
+  const feePct = numVal('feePct');
+  const feeDollar = numVal('feeDollar') || (amt * feePct / 100);
   const mult = parseFloat(document.getElementById('category').value) || 1;
   const cpp = getBlendedCpp();
   const directPts = Math.round(amt * mult);
@@ -177,5 +232,14 @@ function calc() {
 
   updateBlend();
 }
+
+// ── Init ──
+
+document.querySelectorAll('input[type="number"]').forEach(el => {
+  el.type = 'text';
+  el.inputMode = 'decimal';
+  attachNumericInput(el);
+  if (el.value) reformat(el);
+});
 
 buildChips(); syncFee(); calc(); updateHousing();
