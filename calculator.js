@@ -4,7 +4,7 @@ const PARTNERS = [
   { id:'hyatt',    name:'World of Hyatt',    cpp:1.80, favicon:FAVICON('hyatt.com'),            top:true },
   { id:'atmos',    name:'Atmos (Alaska)',     cpp:1.55, favicon:FAVICON('alaskaair.com'),        top:true },
   { id:'aeroplan', name:'Aeroplan',           cpp:1.50, favicon:FAVICON('aeroplan.com'),         top:true },
-  { id:'jal',      name:'Japan Airlines',     cpp:1.45, favicon:FAVICON('jal.co.jp'),              top:true },
+  { id:'jal',      name:'Japan Airlines',     cpp:1.45, favicon:FAVICON('jal.co.jp'),            top:true },
   { id:'flying',   name:'Flying Blue',        cpp:1.40, favicon:FAVICON('flyingblue.com'),       top:true },
   { id:'united',   name:'United MileagePlus', cpp:1.35, favicon:FAVICON('united.com'),           top:true },
   { id:'ba',       name:'British Airways',    cpp:1.30, favicon:FAVICON('britishairways.com'),   top:true },
@@ -105,7 +105,7 @@ function updateHousing() {
   if (h === 0) {
     document.getElementById('hmBadge').textContent = 'Enter rent below';
     const i = document.getElementById('hmInsight');
-    i.style.cssText = 'color:var(--color-text-tertiary);font-style:italic;font-size:12px;';
+    i.style.cssText = 'color:var(--ink-3);font-style:italic;font-size:13px;';
     i.textContent = 'Enter your housing payment to see your unlock threshold.';
     return;
   }
@@ -160,7 +160,7 @@ function calc() {
   document.getElementById('bValue').textContent = fmt(ptDollar);
   document.getElementById('bFee').textContent = '−' + fmt(feeDollar);
   document.getElementById('netV').textContent = (net >= 0 ? '+' : '−') + fmt(net);
-  document.getElementById('netV').style.color = net >= 0 ? '#0F6E56' : '#993C1D';
+  document.getElementById('netV').className = 'net-v' + (net >= 0 ? '' : ' neg');
 
   const sel = PARTNERS.filter(p => selected.has(p.id));
   document.getElementById('cppContext').textContent = overrideActive
