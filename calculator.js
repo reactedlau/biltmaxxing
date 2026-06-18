@@ -121,7 +121,7 @@ function updateBlend() {
   if (overrideActive) { bt.textContent = 'Custom value'; bs.textContent = 'Partner selection overridden'; }
   else if (sel.length === 0) { bt.textContent = 'No partners selected'; bs.textContent = 'Default: Hyatt at 1.80¢'; }
   else if (sel.length === 1) { bt.textContent = sel[0].name; bs.textContent = sel[0].cpp.toFixed(2) + '¢ per point'; }
-  else { bt.textContent = `Avg of ${sel.length}: ${sel.map(p => p.name.split(' ')[0]).join(', ')}`; bs.textContent = cpp.toFixed(2) + '¢ blended average'; }
+  else { bt.textContent = `Average of ${sel.length}: ${sel.map(p => p.name.split(' ')[0]).join(', ')}`; bs.textContent = cpp.toFixed(2) + '¢ blended average'; }
   document.getElementById('advHint').textContent = `using ${cpp.toFixed(2)}¢` + (overrideActive ? ' custom' : sel.length > 0 ? ' · your picks' : ' default');
 }
 
@@ -228,7 +228,7 @@ function calc() {
   const vm = document.getElementById('verdictMain'), vs = document.getElementById('verdictSub');
   if (net > 0.50) { vm.textContent = 'Worth it.'; vm.className = 'verdict-main yes'; vs.innerHTML = `You net <strong>${fmt(net)}</strong> after the fee.`; }
   else if (net < -0.50) { vm.textContent = 'Skip it.'; vm.className = 'verdict-main no'; vs.innerHTML = `Fee costs <strong>${fmt(Math.abs(net))}</strong> more than the points are worth.`; }
-  else { vm.textContent = 'Borderline.'; vm.className = 'verdict-main neutral'; vs.innerHTML = `Nearly a wash — only ${fmt(Math.abs(net))} difference.`; }
+  else { vm.textContent = 'Borderline.'; vm.className = 'verdict-main neutral'; vs.innerHTML = `Nearly a wash: only ${fmt(Math.abs(net))} difference.`; }
 
   updateBlend();
 }
