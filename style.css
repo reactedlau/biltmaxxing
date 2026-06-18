@@ -31,15 +31,15 @@
   --shadow-1: 0 1px 2px rgba(20,26,40,0.04), 0 6px 16px -10px rgba(20,26,40,0.12);
   --shadow-2: 0 2px 6px rgba(20,26,40,0.05), 0 18px 40px -18px rgba(20,26,40,0.22);
 
-  /* ── Theme A · Evergreen (default) ── */
-  --accent: #0B7A5E;
-  --accent-strong: #075F49;
-  --accent-press: #054536;
-  --accent-soft: #E7F4EF;
-  --accent-mid: #B4E1D2;
-  --accent-ink: #064A38;
-  --page-bg: #F3F7F5;
-  --page-tint: #EAF3EF;
+  /* ── Theme A · Bilt Blue (default) ── */
+  --accent: #1A6BC8;
+  --accent-strong: #1257A8;
+  --accent-press: #0D4285;
+  --accent-soft: #EAF2FD;
+  --accent-mid: #B8D5F7;
+  --accent-ink: #0C3470;
+  --page-bg: #F2F6FD;
+  --page-tint: #E5EFF9;
 }
 
 [data-theme="bilt"] {
