@@ -1,9 +1,16 @@
-<svg width="86" height="56" viewBox="0 0 86 56" xmlns="http://www.w3.org/2000/svg">
-  <!-- Card background -->
-  <rect width="86" height="56" rx="5" fill="#0F6E56"/>
-  <!-- Mag stripe flush to top -->
-  <rect y="0" width="86" height="14" rx="5" fill="#085041"/>
-  <rect y="7" width="86" height="7" fill="#085041"/>
-  <!-- Question mark centered -->
-  <text x="43" y="42" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="white">?</text>
+<svg width="86" height="86" viewBox="0 0 86 86" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="card-clip-1-1">
+      <rect width="86" height="86" rx="16" ry="16" />
+    </clipPath>
+  </defs>
+
+  <!-- Base background -->
+  <rect width="86" height="86" rx="16" ry="16" fill="#1c1c1e"/>
+  
+  <!-- Top header banner (Proportionally scaled up to 22px high for a square) -->
+  <rect width="86" height="22" fill="#ADCBF5" clip-path="url(#card-clip-1-1)"/>
+  
+  <!-- Text: Maximize size to 42px for ultimate legibility -->
+  <text x="43" y="68" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="42" font-weight="700" fill="white">%</text> 
 </svg>
