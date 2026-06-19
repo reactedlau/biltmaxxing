@@ -149,7 +149,7 @@ body {
 .footer-line { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
 .footer-line a { color: var(--accent); text-decoration: none; }
 .footer-line a:hover { text-decoration: underline; }
-.footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 4px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 12px; }
 .footer-links a { font-size: 13px; font-weight: 500; color: var(--accent); text-decoration: none; cursor: pointer; }
 .footer-links a:hover { text-decoration: underline; }
 
@@ -390,3 +390,7 @@ body {
   box-shadow: none;
 }
 [data-surface="solid"] .caveat { border-left: 3px solid var(--neg); }
+
+.hidden {
+  display: none;
+}
